@@ -1,8 +1,9 @@
 # K8s homework 101
 > so ..
 
-### chart1
-> 题目一
+### 题目一
+> chart1
+
 在chart1所在目录，执行一下命令
 
 ```sh
@@ -22,8 +23,8 @@ helm install -f values-redis.yaml --name redis-uat --namespace uat .
 
 ```
 
-### chart2
-> 题目二
+### 题目二
+> chart2
 
 虚拟机安装redis-server
 ```sh
