@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: {{.Values.kind | default "Deployment"}}
+metadata:
+  name: {{.Values.serverName}}
+  labels:
+{{ include "coins.labels" . | indent 4 }}
+spec:
+{{- if .Values.replicaEnabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "coins.labels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "coins.labels" . | indent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "coins.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{.Values.serverName}}
+          env:
+          - name: PROJECT_NAME
+            value: {{.Values.projectName}}
+          - name: ENVIRONMENT
+            value: {{.Release.Namespace}}
+          - name: SERVICE_NAME
+            value: {{.Values.serverName}}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.probeEnabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

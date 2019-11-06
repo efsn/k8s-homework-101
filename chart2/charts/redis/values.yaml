@@ -1,0 +1,13 @@
+projectName: dockercoins
+
+serviceAccount:
+  create: true
+
+service:
+  type: ClusterIP
+  port: 6379
+  targetPort: 6379
+  targetIp: 192.168.33.101
+
+ingress:
+  enabled: false

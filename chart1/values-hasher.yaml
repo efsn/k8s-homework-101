@@ -1,0 +1,20 @@
+projectName: dockercoins
+replicaCount: 1
+replicaEnabled: true
+serverName: hasher
+probeEnabled: false
+
+image:
+  repository: dockercoins/hasher
+  tag: v0.1
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+service:
+  enabled: false
+  type: ClusterIP
+  port: 80 
+
+ingress:
+  enabled: false
